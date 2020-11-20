@@ -1,26 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Router } from "@reach/router";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
-import ImageCard from "./components/ImageCard";
-import ImageSearch from "./components/ImageSearch";
 import Navbar from "./components/Navbar";
 import Favs from "./components/Favs";
-
-function Images({ images, isLoading, setTerm }) {
-  return (
-    <>
-      <ImageSearch onSearch={setTerm} />
-      {isLoading ? (
-        <h1 className="text=6xl text-center mx-auto mt-32">Loading</h1>
-      ) : (
-        <div className="grid grid-cols-3 gap-4">
-          {images.length > 0 &&
-            images.map((image) => <ImageCard key={image.id} img={image} />)}
-        </div>
-      )}
-    </>
-  );
-}
+import Images from "./components/Images";
 
 function App() {
   const [images, setImages] = useState([]);
@@ -42,18 +25,17 @@ function App() {
 
   return (
     <>
-      <Navbar />
-      <div className="container mx-auto">
-        <Router>
-          <Images
-            isLoading={isLoading}
-            images={images}
-            setTerm={setTerm}
-            path="/"
-          />
-          <Favs path="favs" />
-        </Router>
-      </div>
+      <Router basename={process.env.PUBLIC_URL}>
+        <Navbar />
+        <div className="container mx-auto">
+          <Route exact path="/">
+            <Images isLoading={isLoading} images={images} setTerm={setTerm} />
+          </Route>
+          <Route path="/favourite">
+            <Favs />
+          </Route>
+        </div>
+      </Router>
     </>
   );
 }
